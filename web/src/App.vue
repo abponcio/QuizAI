@@ -34,6 +34,9 @@
 
   const handleSubmit = async () => {
     submitting.value = true;
+    questions.value = null;
+    answers.value = null;
+
     const quiz = {
       topic: topic.value.value,
       num_questions: parseInt(question.value.value),
