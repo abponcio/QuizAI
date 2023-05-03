@@ -38,6 +38,7 @@
 
   const handleSubmit = async () => {
     submitting.value = true;
+    submitted.value = false;
     questions.value = null;
     answers.value = null;
 
@@ -62,6 +63,10 @@
     topic.value = '';
     question.value = 2;
     answer.value = 2;
+  }
+
+  const tryAgain = async () => {
+    await handleSubmit()
   }
 </script>
 
@@ -92,14 +97,16 @@
   <div class="start-test" v-if="questions">
     <div class="header">
       <h2>Questions</h2>
-      <div class="actions"><a href="#" @click.prevent="handleRegenerate">Generate a new one</a></div>
+      <div class="actions">
+        <a href="#" @click.prevent="tryAgain">Try again</a>&nbsp;  |  &nbsp;<a href="#" @click.prevent="handleRegenerate">Generate a new one</a>
+      </div>
     </div>
     <h3>Topic: {{ topic }}</h3>
     <div v-for="(question, index) in questions" :key="index" class="questions-list">
       <div v-html="question" style="white-space: pre-line; text-align: left;"/>
       <div style="text-align: left;">
         Answer:
-        <input type="text" @input="(e) => handleAnswer(e.target.value, index)">
+        <input type="text" @input="(e) => handleAnswer(e.target.value, index)" :disabled="submitting">
       </div>
       <div v-if="submitted" v-html="answers[index]" style="white-space: pre-line; text-align: left;" class="correct-answer"/>
       <hr class="hr"/>
