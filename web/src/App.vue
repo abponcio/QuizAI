@@ -59,6 +59,9 @@
     questions.value = null;
     answers.value = null;
     submitted.value = false;
+    topic.value = '';
+    question.value = 2;
+    answer.value = 2;
   }
 </script>
 
