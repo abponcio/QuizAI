@@ -8,7 +8,7 @@ class AI():
         print(topic, num_questions, num_possible_answers)
         prompt = f"Create a multiple choice quiz on the topic about {topic}. "
         prompt += f"with {num_questions} questions that starts with 'Q#: ' that is based on a fact and not opinionated. "
-        prompt += f"Each question should have {num_possible_answers} possible answers starts with capital letter bullet points with this format 'A. '. "
+        prompt += f"Each question should have {num_possible_answers} possible answers with only one possible correct answer that starts with capital letter bullet points with this format 'A. '. "
         prompt += f"Also include the correct answer for each question with a starting string of 'Correct Answer: '"
 
         response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=512, temperature=0.7)

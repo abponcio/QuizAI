@@ -4,8 +4,8 @@
   import { onMounted, ref } from 'vue';
 
   const topic = ref('');
-  const question = ref(2);
-  const answer = ref(2);
+  const question = ref(4);
+  const answer = ref(4);
   const submitting = ref(false);
   const submitted = ref(false);
   const results = ref(null);
@@ -61,8 +61,8 @@
     answers.value = null;
     submitted.value = false;
     topic.value = '';
-    question.value = 2;
-    answer.value = 2;
+    question.value = 4;
+    answer.value = 4;
   }
 
   const tryAgain = async () => {
