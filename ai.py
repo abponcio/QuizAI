@@ -11,7 +11,7 @@ class AI():
         prompt += f"Each question should have {num_possible_answers} possible answers starts with capital letter bullet points with this format 'A. '. "
         prompt += f"Also include the correct answer for each question with a starting string of 'Correct Answer: '"
 
-        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=256, temperature=0.7)
+        response = openai.Completion.create(engine="text-davinci-003", prompt=prompt, max_tokens=512, temperature=0.7)
 
         student_questions = self.create_student_view(response['choices'][0]['text'], num_questions)
         answer_questions = self.create_answers_view(response['choices'][0]['text'], num_questions)
