@@ -1,144 +1,96 @@
-
 <script setup>
-  import axios from 'axios';
-  import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import axios from 'axios';
+import Quizzer from './components/Quizzer.vue';
 
-  const topic = ref('');
-  const question = ref(4);
-  const answer = ref(4);
-  const submitting = ref(false);
-  const submitted = ref(false);
-  const results = ref(null);
+const state = ref('data')
+const results = ref('')
+const question = ref('')
+const submitting = ref(false)
 
-  const questions = ref(null)
-  const answers = ref(null)
+const handleSubmit = async () => {
+  submitting.value = true;
 
-  const studentAnswers = {}
+  const response = await axios.post('http://localhost:8000/faq', { question: question.value })
 
-  const finalScore = ref(0)
-
-  const handleAnswer = (value, index) => {
-    studentAnswers[index] = value
-  }
-
-  const submitTest = () => {
-    const score = Object.keys(studentAnswers).reduce((acc, index) => {
-      if (studentAnswers[index].toLowerCase() === answers.value[index].charAt(16).toLowerCase()) {
-        return acc + 1
-      }
-
-      return acc
-    }, 0)
-
-    finalScore.value = score
-    submitted.value = true;
-
-    results.value.showModal()
-  }
-
-  const handleSubmit = async () => {
-    submitting.value = true;
-    submitted.value = false;
-    questions.value = null;
-    answers.value = null;
-
-    const quiz = {
-      topic: topic.value,
-      num_questions: parseInt(question.value),
-      num_answers: parseInt(answer.value),
-    };
-
-    const response = await axios.post('http://localhost:8000/quiz', quiz)
-
-    questions.value = response.data.questions
-    answers.value = response.data.answers
-
-    submitting.value = false;
-  };
-
-  const handleRegenerate = () => {
-    questions.value = null;
-    answers.value = null;
-    submitted.value = false;
-    topic.value = '';
-    question.value = 4;
-    answer.value = 4;
-  }
-
-  const tryAgain = async () => {
-    await handleSubmit()
-  }
+  results.value = response.data
+  submitting.value = false;
+};
 </script>
 
 <template>
-  <h1>Quiz Generator</h1>
-  <div class="quiz-wrapper" v-if="!questions">
+  <nav>
+    <ul>
+      <li @click="() => state = 'quiz'">Quiz</li>
+      <li @click="() => state = 'data'">Fine Tuned Data</li>
+    </ul>
+  </nav>
+  <template v-if="state === 'quiz'">
+    <Quizzer />
+  </template>
+
+  <template v-if="state === 'data'">
+    <div class="quiz-wrapper">
+      <h1>Fine Tuned Data Chatbot</h1>
+      <div v-html="results" class="results" />
       <form @submit.prevent="handleSubmit" class="form">
         <div class="form-group-col">
-          <label for="quiz-name">Topic:</label>
-          <textarea id="quiz-name" name="quiz-name" required v-model="topic" placeholder="Choose any topic to generate" :disabled="submitting"/>
+          <label for="quiz-name">Ask anything about Hello Chef:</label>
+          <textarea id="quiz-name" name="quiz-name" required v-model="question" placeholder="Ask here"
+            :disabled="submitting" />
         </div>
-
-        <div class="form-group">
-          <label for="quiz-description">Number of Questions:</label>
-          <input type="number" max="4" min="1" id="quiz-description" name="quiz-description" v-model.number="question" :disabled="submitting" />
-        </div>
-
-        <div class="form-group">
-          <label for="quiz-answers">Number of Answers:</label>
-          <input type="number" min="1" max="4" id="quiz-answers" name="quiz-answers" v-model.number="answer" :disabled="submitting"/>
-        </div>
-
         <button type="submit" :disabled="submitting" class="submit-btn">Submit</button>
       </form>
-
-  </div>
-
-  <div class="start-test" v-if="questions">
-    <div class="header">
-      <h2>Questions</h2>
-      <div class="actions">
-        <a href="#" @click.prevent="tryAgain">Try again</a>&nbsp;  |  &nbsp;<a href="#" @click.prevent="handleRegenerate">Generate a new one</a>
-      </div>
     </div>
-    <h3>Topic: {{ topic }}</h3>
-    <div v-for="(question, index) in questions" :key="index" class="questions-list">
-      <div v-html="question" style="white-space: pre-line; text-align: left;"/>
-      <div style="text-align: left;">
-        Answer:
-        <input type="text" @input="(e) => handleAnswer(e.target.value, index)" :disabled="submitting">
-      </div>
-      <div v-if="submitted" v-html="answers[index]" style="white-space: pre-line; text-align: left;" class="correct-answer"/>
-      <hr class="hr"/>
-    </div>
-    <button @click="submitTest" class="complete-btn">Complete Test</button>
-  </div>
-
-  <dialog ref="results">
-    <h2 v-if="((finalScore / answer) * 100) >= 50">You Passed!</h2>
-    <h2 v-else>You Failed!</h2>
-    <p>Final Score: {{ finalScore }} / {{ answer }}</p>
-
-    <form method="dialog">
-      <button>OK</button>
-    </form>
-  </dialog>
-
+  </template>
 </template>
 
 <style scoped>
+nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0
+}
+
+nav ul li {
+  list-style: none;
+  cursor: pointer;
+  padding: 1rem;
+}
+
+nav ul li:hover {
+  background-color: #eee;
+  color: black;
+}
+
+.results {
+  white-space: pre-line;
+  text-align: left;
+  overflow-y: auto;
+  max-height: 300px;
+  min-height: 300px;
+  background-color: #eee;
+  border-radius: 0.5rem;
+  color: black;
+  padding: 1rem;
+}
+
 .header {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
   align-items: center;
 }
+
 .quiz-wrapper {
   display: grid;
   align-items: center;
   flex-direction: column;
   flex: 1;
   height: 100%;
+  gap: 1rem;
 }
 
 .form {
@@ -162,6 +114,7 @@
 .form-group-col label {
   text-align: left;
 }
+
 .form-group input {
   flex: 1;
   padding: 0.5rem;
@@ -181,6 +134,7 @@
 .hr {
   width: 100%;
 }
+
 .start-test {
   display: flex;
   flex-direction: column;
@@ -201,6 +155,7 @@
   background-color: cornflowerblue;
   color: white;
 }
+
 .submit-btn {
   background-color: cornflowerblue;
   color: white;
