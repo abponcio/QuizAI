@@ -14,5 +14,5 @@ class FAQAI():
 
         print(prompt)
         response = openai.Completion.create(
-            engine="babbage:ft-personal-2023-06-20-19-31-10", prompt=prompt, max_tokens=128, temperature=0.7, top_p=1.0)
+            model="babbage:ft-personal-2023-06-20-19-31-10", prompt=prompt, max_tokens=128, temperature=0)
         return response['choices'][0]['text']
