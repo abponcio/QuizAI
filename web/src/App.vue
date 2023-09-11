@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import Quizzer from './components/Quizzer.vue';
 
-const state = ref('data')
+const state = ref('quiz')
 const results = ref('')
 const question = ref('')
 const submitting = ref(false)
@@ -22,14 +22,14 @@ const handleSubmit = async () => {
   <nav>
     <ul>
       <li @click="() => state = 'quiz'">Quiz</li>
-      <li @click="() => state = 'data'">Fine Tuned Data</li>
+      <!-- <li @click="() => state = 'data'">Fine Tuned Data</li> -->
     </ul>
   </nav>
   <template v-if="state === 'quiz'">
     <Quizzer />
   </template>
 
-  <template v-if="state === 'data'">
+  <!-- <template v-if="state === 'data'">
     <div class="quiz-wrapper">
       <h1>Fine Tuned Data Chatbot</h1>
       <div v-html="results" class="results" />
@@ -42,7 +42,7 @@ const handleSubmit = async () => {
         <button type="submit" :disabled="submitting" class="submit-btn">Submit</button>
       </form>
     </div>
-  </template>
+  </template> -->
 </template>
 
 <style scoped>

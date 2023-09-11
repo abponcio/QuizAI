@@ -50,10 +50,10 @@ const handleSubmit = async () => {
     num_answers: parseInt(answer.value),
   };
 
-  const response = await axios.post('http://localhost:8000/quiz', quiz)
+  const response = await axios.post('https://zss0588l18.execute-api.ap-south-1.amazonaws.com/generate-quiz', quiz)
 
-  questions.value = response.data.questions
-  answers.value = response.data.answers
+  questions.value = response.data.results.questions
+  answers.value = response.data.results.answers
 
   submitting.value = false;
 };
@@ -134,6 +134,7 @@ const tryAgain = async () => {
 <style scoped>
 .header {
   display: flex;
+  width: 100%;
   gap: 1rem;
   justify-content: space-between;
   align-items: center;
@@ -194,7 +195,6 @@ const tryAgain = async () => {
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
-  max-width: 50%;
 }
 
 .correct-answer {
